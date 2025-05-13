@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Intelligence Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-bg: #1a2234;
+            --sidebar-text: #ffffff;
+            --sidebar-hover: #2a3245;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --body-bg: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--body-bg);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 10px 0;
+        }
+        
+        .sidebar-header i {
+            font-size: 24px;
+            margin-right: 12px;
+            color: var(--sidebar-text);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .sidebar-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 30px;
+            transition: background-color 0.2s;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .sidebar-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .sidebar-btn i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .document-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .document-item {
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .document-item:hover {
+            background-color: var(--sidebar-hover);
+        }
+        
+        .document-item i {
+            margin-right: 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        .clear-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+        
+        .clear-btn:hover {
+            background-color: #dc2626;
+        }
+        
+        .clear-btn i {
+            margin-right: 8px;
+        }
+        
+        .system-status {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 15px;
+        }
+        
+        .system-status .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .welcome-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+        
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-description {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 0 15px;
+            max-width: 200px;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .feature-icon i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+        
+        .feature-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .upload-btn i {
+            margin-right: 8px;
+        }
+        
+        .chat-interface {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .document-selector {
+            margin-bottom: 20px;
+        }
+        
+        .chat-input {
+            display: flex;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 50px 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .send-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            min-height: 100px;
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-robot"></i>
+            <h2>Document<br>Intelligence</h2>
+        </div>
+        
+        <button id="upload-sidebar-btn" class="sidebar-btn">
+            <i class="fas fa-upload"></i> Upload New Document
+        </button>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">YOUR DOCUMENTS</div>
+            <div id="document-list" class="document-list">
+                <div class="document-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>No documents uploaded yet</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <button id="clear-all-btn" class="clear-btn">
+                <i class="fas fa-trash"></i> Clear All Files
+            </button>
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span>System Online</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div id="welcome-screen" class="welcome-card">
+            <h1 class="welcome-title">Document Intelligence Platform</h1>
+            <p class="welcome-description">
+                Upload documents and ask questions about their content. Our AI
+                will analyze the files and provide accurate answers based on the
+                information contained within.
+            </p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Multiple Formats</h3>
+                    <p class="feature-description">
+                        Support for PDF, DOCX, TXT, and image files
+                    </p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Search</h3>
+                    <p class="feature-description">
+                        Ask questions in natural language
+                    </p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered</h3>
+                    <p class="feature-description">
+                        Powered by Google's Gemini AI
+                    </p>
+                </div>
+            </div>
+            
+            <button id="upload-main-btn" class="upload-btn">
+                <i class="fas fa-upload"></i> Upload a Document to Get Started
+            </button>
+        </div>
+        
+        <div id="chat-interface" class="chat-interface">
+            <div class="document-selector">
+                <select id="selected_file" class="form-select">
+                    <option value="">All Documents</option>
+                </select>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="user_input" placeholder="Ask a question about your documents..." />
+                <button id="send-btn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div id="response-box" class="response-area"></div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact</a>
+            </div>
+            <p>© 2023 Document Intelligence Platform</p>
+        </div>
+    </div>
+    
+    <!-- File Upload Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Document</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="upload-form">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Select a file to upload</label>
+                            <input class="form-control" type="file" id="file" name="file" required>
+                            <div class="form-text">Supported formats: PDF, DOCX, TXT, Images</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="upload-submit-btn">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const chatInterface = document.getElementById('chat-interface');
+        const fileSelect = document.getElementById('selected_file');
+        const userInput = document.getElementById('user_input');
+        const sendBtn = document.getElementById('send-btn');
+        const responseBox = document.getElementById('response-box');
+        const documentList = document.getElementById('document-list');
+        const uploadForm = document.getElementById('upload-form');
+        const uploadSubmitBtn = document.getElementById('upload-submit-btn');
+        const clearAllBtn = document.getElementById('clear-all-btn');
+        
+        // Initialize Bootstrap modal
+        const uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+        
+        // Open upload modal from both buttons
+        document.getElementById('upload-sidebar-btn').addEventListener('click', () => {
+            uploadModal.show();
+        });
+        
+        document.getElementById('upload-main-btn').addEventListener('click', () => {
+            uploadModal.show();
+        });
+        
+        // Fetch files on page load
+        async function fetchFiles() {
+            try {
+                const res = await fetch("/files");
+                const data = await res.json();
+                
+                // Update file select dropdown
+                fileSelect.innerHTML = '<option value="">All Documents</option>';
+                
+                // Update sidebar document list
+                if (data.files && data.files.length > 0) {
+                    documentList.innerHTML = '';
+                    
+                    data.files.forEach(file => {
+                        // Add to dropdown
+                        const opt = document.createElement("option");
+                        opt.value = file;
+                        opt.textContent = file;
+                        fileSelect.appendChild(opt);
+                        
+                        // Add to sidebar
+                        const docItem = document.createElement("div");
+                        docItem.className = "document-item";
+                        docItem.innerHTML = `<i class="fas fa-file-alt"></i><span>${file}</span>`;
+                        docItem.addEventListener('click', () => {
+                            fileSelect.value = file;
+                            showChatInterface();
+                        });
+                        documentList.appendChild(docItem);
+                    });
+                    
+                    // Show chat interface if we have files
+                    showChatInterface();
+                } else {
+                    documentList.innerHTML = '<div class="document-item"><i class="fas fa-file-alt"></i><span>No documents uploaded yet</span></div>';
+                }
+            } catch (error) {
+                console.error("Error fetching files:", error);
+            }
+        }
+        
+        // Show chat interface and hide welcome screen
+        function showChatInterface() {
+            welcomeScreen.style.display = 'none';
+            chatInterface.style.display = 'block';
+        }
+        
+        // Handle file upload
+        uploadSubmitBtn.addEventListener('click', async () => {
+            const fileInput = document.getElementById('file');
+            if (!fileInput.files[0]) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            try {
+                const res = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                // Show response
+                responseBox.textContent = data.response;
+                responseBox.style.display = 'block';
+                
+                // Close modal and reset form
+                uploadModal.hide();
+                uploadForm.reset();
+                
+                // Refresh file list
+                fetchFiles();
+                
+                // Show chat interface
+                showChatInterface();
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                alert('Error uploading file. Please try again.');
+            }
+        });
+        
+        // Handle sending questions
+        sendBtn.addEventListener('click', sendQuestion);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+        
+        async function sendQuestion() {
+            const question = userInput.value.trim();
+            const selectedFile = fileSelect.value;
+            
+            if (!question) return;
+            
+            const formData = new URLSearchParams();
+            formData.append('user_input', question);
+            formData.append('selected_file', selectedFile);
+            
+            try {
+                const res = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                // Show response
+                responseBox.textContent = data.response;
+                responseBox.style.display = 'block';
+                
+                // Clear input
+                userInput.value = '';
+            } catch (error) {
+                console.error('Error asking question:', error);
+                responseBox.textContent = 'Error processing your question. Please try again.';
+                responseBox.style.display = 'block';
+            }
+        }
+        
+        // Handle clear all files
+        clearAllBtn.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all files? This action cannot be undone.')) {
+                try {
+                    const res = await fetch('/clear', {
+                        method: 'POST'
+                    });
+                    
+                    // Refresh file list
+                    fetchFiles();
+                    
+                    // Show welcome screen
+                    welcomeScreen.style.display = 'block';
+                    chatInterface.style.display = 'none';
+                    
+                    // Clear response
+                    responseBox.style.display = 'none';
+                } catch (error) {
+                    console.error('Error clearing files:', error);
+                    alert('Error clearing files. Please try again.');
+                }
+            }
+        });
+        
+        // Load files on start
+        fetchFiles();
+    </script>
+</body>
+</html>
