@@ -1,0 +1,38 @@
+[project]
+name = "document-query-assistant"
+version = "0.1.0"
+description = "AI-powered document analysis and Q&A system built with Streamlit and Google Gemini"
+authors = [
+    { name = "SHYAMFRANCIS" },
+]
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "google-generativeai",
+    "PyPDF2",
+    "python-docx",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
