@@ -16,14 +16,18 @@ class TestPDFExtraction:
 
     def test_extract_text_from_pdf_success(self):
         """Test successful PDF text extraction."""
+        import io
+
         mock_pdf_reader = Mock()
+        mock_pdf_reader.is_encrypted = False
         mock_page1 = Mock()
         mock_page1.extract_text.return_value = "This is page one content."
         mock_page2 = Mock()
         mock_page2.extract_text.return_value = "This is page two content."
         mock_pdf_reader.pages = [mock_page1, mock_page2]
 
-        mock_file = Mock()
+        # Create a mock file with PDF header
+        mock_file = io.BytesIO(b'%PDF-1.4 mock content')
 
         with patch("services.document_parser.PyPDF2.PdfReader", return_value=mock_pdf_reader):
             result = extract_text_from_pdf(mock_file)
@@ -33,12 +37,15 @@ class TestPDFExtraction:
 
     def test_extract_text_from_pdf_empty(self):
         """Test PDF with no extractable text."""
+        import io
+
         mock_pdf_reader = Mock()
+        mock_pdf_reader.is_encrypted = False
         mock_page = Mock()
         mock_page.extract_text.return_value = None
         mock_pdf_reader.pages = [mock_page]
 
-        mock_file = Mock()
+        mock_file = io.BytesIO(b'%PDF-1.4 empty content')
 
         with patch("services.document_parser.PyPDF2.PdfReader", return_value=mock_pdf_reader):
             result = extract_text_from_pdf(mock_file)
@@ -47,13 +54,14 @@ class TestPDFExtraction:
 
     def test_extract_text_from_pdf_error(self):
         """Test PDF extraction error handling."""
-        mock_file = Mock()
+        import io
 
-        with patch("services.document_parser.PyPDF2.PdfReader", side_effect=Exception("Corrupted PDF")):
-            result = extract_text_from_pdf(mock_file)
+        # Create a mock file that's not a valid PDF
+        mock_file = io.BytesIO(b'NOT_A_PDF content')
 
-        assert "Error extracting text from PDF" in result
-        assert "Corrupted PDF" in result
+        result = extract_text_from_pdf(mock_file)
+
+        assert "not a valid PDF" in result
 
 
 class TestDOCXExtraction:
